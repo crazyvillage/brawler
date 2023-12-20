@@ -12,8 +12,8 @@ fn main() {
         .load(connection)
         .expect("Error loading posts");
 
-    println!("Displaying {} posts", results.len());
-    for post in results {
-        println!("{}", post.name);
+    println!("Displaying {} cards", results.len());
+    for c in results {
+        println!("{}", c.name);
     }
 }
