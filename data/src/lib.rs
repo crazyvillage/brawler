@@ -15,14 +15,14 @@ pub fn establish_connection() -> PgConnection {
         .unwrap_or_else(|_| panic!("Error connecting to {}", database_url))
 }
 
-pub fn create_post(conn: &mut PgConnection, name: &str) -> Card {
+pub fn create_card(conn: &mut PgConnection, name: &str) -> Card {
     use crate::schema::card;
 
-    let new_post = NewCard { name };
+    let new_card = NewCard { name };
 
     diesel::insert_into(card::table)
-        .values(&new_post)
+        .values(&new_card)
         .returning(Card::as_returning())
         .get_result(conn)
-        .expect("Error saving new post")
+        .expect("Error saving new card")
 }
