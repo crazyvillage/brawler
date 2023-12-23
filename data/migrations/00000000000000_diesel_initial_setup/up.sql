@@ -1,7 +1,7 @@
 -- CreateTable
 CREATE TABLE "card" (
     "id" SERIAL NOT NULL,
-    "name" VARCHAR(48) NOT NULL,
+    "name" VARCHAR(64) NOT NULL,
 
     CONSTRAINT "card_pkey" PRIMARY KEY ("id")
 );

@@ -2,7 +2,7 @@ use diesel::prelude::*;
 use crate::schema::card;
 
 #[derive(Queryable, Selectable)]
-#[diesel(table_name = crate::schema::card)]
+#[diesel(table_name = card)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct Card {
     pub id: i32,

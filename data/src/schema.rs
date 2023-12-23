@@ -3,7 +3,7 @@
 diesel::table! {
     card (id) {
         id -> Int4,
-        #[max_length = 48]
+        #[max_length = 64]
         name -> Varchar,
     }
 }

@@ -4,8 +4,8 @@ use diesel::pg::PgConnection;
 use diesel::prelude::*;
 use dotenvy::dotenv;
 use std::env;
-use self::models::{NewCard, Card};
-
+use self::models::{NewCard};
+use external::models::ScryfallCard;
 
 pub fn establish_connection() -> PgConnection {
     dotenv().ok();
@@ -15,14 +15,13 @@ pub fn establish_connection() -> PgConnection {
         .unwrap_or_else(|_| panic!("Error connecting to {}", database_url))
 }
 
-pub fn create_card(conn: &mut PgConnection, name: &str) -> Card {
+pub fn create_cards(conn: &mut PgConnection, cards: &Vec<ScryfallCard>) -> () {
     use crate::schema::card;
 
-    let new_card = NewCard { name };
+    let new_cards: Vec<NewCard> = cards.into_iter().map(|c|  NewCard{name: &c.name}).collect();
 
     diesel::insert_into(card::table)
-        .values(&new_card)
-        .returning(Card::as_returning())
-        .get_result(conn)
-        .expect("Error saving new card")
+        .values(&new_cards)
+        .execute(conn)
+        .expect("Error inserting cards");
 }
