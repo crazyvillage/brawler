@@ -1,24 +1,21 @@
-﻿namespace xplat;
+﻿using xplat.Services;
+
+namespace xplat;
 
 public partial class MainPage : ContentPage
 {
-	int count = 0;
-
-	public MainPage()
+	private readonly ILegalCardService _legalCardService;
+	
+	public MainPage(ILegalCardService legalCardService)
 	{
+		_legalCardService = legalCardService;
 		InitializeComponent();
 	}
 
-	private void OnCounterClicked(object sender, EventArgs e)
+	private async void OnReloadClicked(object sender, EventArgs e)
 	{
-		count++;
-
-		if (count == 1)
-			CounterBtn.Text = $"Clicked {count} time";
-		else
-			CounterBtn.Text = $"Clicked {count} times";
-
-		SemanticScreenReader.Announce(CounterBtn.Text);
+		var cards = await _legalCardService.GetLegalCards();
+		deckLabel.Text = string.Join(',', cards.Select(c => c.Name));
 	}
 }
 

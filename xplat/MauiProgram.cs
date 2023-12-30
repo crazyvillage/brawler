@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using xplat.Services;
 
 namespace xplat;
 
@@ -15,6 +16,9 @@ public static class MauiProgram
 				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
 			});
 
+		builder.Services.AddSingleton<MainPage>();
+		builder.Services.AddSingleton<ILegalCardService, ScryfallService>();
+		
 #if DEBUG
 		builder.Logging.AddDebug();
 #endif
