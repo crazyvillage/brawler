@@ -1,6 +1,8 @@
 ﻿@page "/fetchdata"
+@using Microsoft.EntityFrameworkCore
 @using web.Data
-@inject WeatherForecastService ForecastService
+@implements IDisposable
+@inject IDbContextFactory<LibraryContext> DbFactory
 
 <PageTitle>Weather forecast</PageTitle>
 
@@ -8,7 +10,7 @@
 
 <p>This component demonstrates fetching data from a service.</p>
 
-@if (forecasts == null)
+@if (_cards == null)
 {
     <p><em>Loading...</em></p>
 }
@@ -17,20 +19,18 @@ else
     <table class="table">
         <thead>
             <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
+                <th>Name</th>
+                <th>Colors</th>
+                <th>IsCommander</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var forecast in forecasts)
+        @foreach (var c in _cards)
             {
                 <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
+                    <td>@c.Name</td>
+                    <td>@c.Colors</td>
+                    <td>@c.IsCommander</td>
                 </tr>
             }
         </tbody>
@@ -38,10 +38,35 @@ else
 }
 
 @code {
-    private WeatherForecast[]? forecasts;
+    private LibraryContext? _context;
+    private Card[]? _cards;
+    private bool _isLoading;
 
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await ForecastService.GetForecastAsync(DateOnly.FromDateTime(DateTime.Now));
+        if (_isLoading)
+        {
+            return;
+        }
+
+        try
+        {
+            _isLoading = true;
+            _context = await DbFactory.CreateDbContextAsync();
+            if (_context?.Cards != null)
+            {
+                _cards = await _context.Cards.AsNoTracking().ToArrayAsync();
+            }
+        }
+        finally
+        {
+            _isLoading = false;
+        }
     }
+
+    public void Dispose()
+    {
+        _context?.Dispose();
+    }
+
 }
